@@ -59,6 +59,11 @@ export const AppBar: React.FC = () => {
             href="/"
             navigationStarts={() => setIsNavOpen(false)}
           />
+          <NavElement 
+            label="API Keys"
+            href="/apiKeys"
+            navigationStarts={() => setIsNavOpen(false)}
+          />
           <NavElement
             label="Basics"
             href="/basics"

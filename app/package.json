@@ -11,7 +11,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.7.1",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@heroicons/react": "^1.0.5",
+    "@mui/material": "^5.13.6",
     "@noble/ed25519": "^1.7.1",
     "@solana/wallet-adapter-base": "^0.9.22",
     "@solana/wallet-adapter-react": "^0.15.32",
@@ -23,6 +27,7 @@
     "axios": "^1.4.0",
     "daisyui": "^1.24.3",
     "date-fns": "^2.29.3",
+    "framer-motion": "^10.12.18",
     "immer": "^9.0.12",
     "jquery": "^3.7.0",
     "jquery.terminal": "^2.36.0",
