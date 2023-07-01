@@ -1,12 +1,13 @@
-import React, { FC, Component, useEffect, useRef, useContext } from 'react';
-import $ from 'jquery';
-import 'jquery.terminal';
-import 'jquery.terminal/js/jquery.terminal.min';
-import 'jquery.terminal/css/jquery.terminal.min.css'; // Import the CSS file
+import React, { FC, Component, useEffect, useRef, useContext } from 'react'
+import $ from 'jquery'
+import 'jquery.terminal'
+import 'jquery.terminal/js/jquery.terminal.min'
+import 'jquery.terminal/css/jquery.terminal.min.css'
 import { PublicKey, Keypair, SystemProgram, Transaction, Connection } from '@solana/web3.js'
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import useUserSOLBalanceStore from '../stores/useUserSOLBalanceStore';
-import { useNetworkConfiguration } from '../contexts/NetworkConfigurationProvider';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+import useUserSOLBalanceStore from '../stores/useUserSOLBalanceStore'
+import { useNetworkConfiguration } from '../contexts/NetworkConfigurationProvider'
+import { createuser, login } from 'lib/ApiHelpers'
 
 function color(name: string, string: string): string {
     const colors: Record<string, string> = {
@@ -37,6 +38,7 @@ ________________________________    _____  .___ _______   ____ ___  _________
 
 let walletPubkey: PublicKey
 let userConnection: Connection
+let username: string = 'guest'
 let userNetwork
 
 export const Terminal: FC = () => {
@@ -62,6 +64,43 @@ export const Terminal: FC = () => {
             function(command: string) {
             // Terminal command handler
             terminal.echo('You entered: ' + command);
+            },
+            create_account: async function(proposedUsername: string){
+                if(!walletPubkey){
+                    this.echo('Wallet not detected. Please connect wallet to login.')
+                } else {
+                    let response = await createuser(walletPubkey.toString(), proposedUsername)
+                    switch(response){
+                        case 201:
+                            username = proposedUsername
+                            this.echo(`Username successfully created! Welcome ${proposedUsername}!`)
+                        case 400:
+                            this.echo('Username already taken... sorry.')
+                        default:
+                            this.echo(response.toString())
+                    }
+                }
+            },
+            login: async function() {
+                if(!walletPubkey){
+                    this.echo('Wallet not detected. Please connect wallet to login.')
+                } else {
+                    let user = await login(walletPubkey.toString())
+                    if(user) {
+                        username = user
+                        this.echo(`Login successful! Welcome ${user}.`)
+                    } else {
+                        this.echo('Wallet not associated with existing account. Please create one with the following command:')
+                        this.echo('create_account <desired username>')
+                    }
+                }
+            },
+            logout: function() {
+                username = 'guest'
+                this.echo("Successfully logged out.")
+            },
+            whoami: function() {
+                this.echo(username)
             },
             hello: function(input: string) {
             this.echo('Hello, ' + input + '. Welcome to this terminal.');
@@ -92,7 +131,7 @@ export const Terminal: FC = () => {
         {
             greetings: "Welcome to Terminus",
             prompt() {
-            return `${color('violet', 'guest@terminus')}>`;
+            return `${color('violet', username+'@terminus')}>`;
             }
         }
         );
@@ -100,7 +139,7 @@ export const Terminal: FC = () => {
         return () => {
             ($(terminalRef.current!) as any);
         };
-    }, [publicKey, connection, getUserSOLBalance, networkConfiguration]);
+    }, [publicKey, connection, getUserSOLBalance, networkConfiguration, username]);
 
     return <div ref={terminalRef} className="rounded-xl container"></div>;
 };

@@ -2,12 +2,15 @@ import { Pool } from "pg"
 const { Sequelize, DataTypes } = require('sequelize')
 
 // Option 3: Passing parameters separately (other dialects)
-export const sequelize = new Sequelize(process.env.DATABASE, process.env.PGSQL_USER, process.env.PGSQL_PASSWORD, {
+export const sequelize = new Sequelize(process.env.PGSQL_DATABASE, process.env.PGSQL_USER, process.env.PGSQL_PASSWORD, {
     host: 'localhost',
-    dialect: 'postgres'
+    dialect: 'postgres',
+    define: {
+        freezeTableName: true
+    }
 })
 
-export const User = sequelize.define('User', {
+export const User = sequelize.define('Users', {
     pubkey: {
         type: DataTypes.STRING,
         allowNull: false
@@ -16,7 +19,6 @@ export const User = sequelize.define('User', {
         type: DataTypes.STRING
     }
     }, {
-    // Other model options go here
 })
 
 export const ApiKeys = sequelize.define('apiKeys', {
