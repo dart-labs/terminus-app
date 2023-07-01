@@ -37,7 +37,7 @@ export const HomeView: FC = ({ }) => {
         </h1>
         </div>
         <h4 className="md:w-full text-2x1 md:text-4xl text-center text-slate-300 my-2">
-          <p>Unleash the full power of blockchain at your fingertipes.</p>
+          <p>Unleash the full power of blockchain at your fingertips.</p>
           <p className='text-slate-500 text-2x1 leading-relaxed'>Become a Crypto super user.</p>
         </h4>
         <Terminal />

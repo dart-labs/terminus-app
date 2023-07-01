@@ -8,6 +8,8 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import useUserSOLBalanceStore from '../stores/useUserSOLBalanceStore'
 import { useNetworkConfiguration } from '../contexts/NetworkConfigurationProvider'
 import { createuser, login } from 'lib/ApiHelpers'
+import { chainInfo } from 'lib/SolScanApi'
+import { SolScanChainInformation } from 'lib/state'
 
 function color(name: string, string: string): string {
     const colors: Record<string, string> = {
@@ -126,6 +128,14 @@ export const Terminal: FC = () => {
                     setNetworkConfiguration(arg2)
                     this.echo('Network updated.')
                 }
+            },
+            chaininfo: async function() {
+                let result = await chainInfo()
+                this.echo('Block Height: ' + result.blockHeight)
+                this.echo('Current Epoch: ' + result.currentEpoch)
+                this.echo('Absolute Slot: ' + result.absoluteSlot)
+                this.echo('Transaction Count: ' + result.transactionCount)
+
             }
         },
         {

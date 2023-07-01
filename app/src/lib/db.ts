@@ -1,7 +1,5 @@
-import { Pool } from "pg"
 const { Sequelize, DataTypes } = require('sequelize')
 
-// Option 3: Passing parameters separately (other dialects)
 export const sequelize = new Sequelize(process.env.PGSQL_DATABASE, process.env.PGSQL_USER, process.env.PGSQL_PASSWORD, {
     host: 'localhost',
     dialect: 'postgres',
