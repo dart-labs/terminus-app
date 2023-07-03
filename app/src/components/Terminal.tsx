@@ -3,13 +3,15 @@ import $ from 'jquery'
 import 'jquery.terminal'
 import 'jquery.terminal/js/jquery.terminal.min'
 import 'jquery.terminal/css/jquery.terminal.min.css'
-import { PublicKey, Keypair, SystemProgram, Transaction, Connection } from '@solana/web3.js'
+import * as solana from '@solana/web3.js'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import useUserSOLBalanceStore from '../stores/useUserSOLBalanceStore'
 import { useNetworkConfiguration } from '../contexts/NetworkConfigurationProvider'
 import { createuser, login } from 'lib/ApiHelpers'
 import { chainInfo } from 'lib/SolScanApi'
 import { SolScanChainInformation } from 'lib/state'
+import { sendLamportsTx } from 'lib/solana'
+import { notify } from "../utils/notifications"
 
 function color(name: string, string: string): string {
     const colors: Record<string, string> = {
@@ -38,8 +40,8 @@ ________________________________    _____  .___ _______   ____ ___  _________
                    \\/         \\/         \\/            \\/                 \\/
 `
 
-let walletPubkey: PublicKey
-let userConnection: Connection
+let walletPubkey: solana.PublicKey
+let userConnection: solana.Connection
 let username: string = 'guest'
 let userNetwork
 
@@ -47,9 +49,10 @@ export const Terminal: FC = () => {
     const terminalRef = useRef<HTMLDivElement>(null);
 
     const { connection } = useConnection();
-    const { publicKey } = useWallet();
+    const { publicKey, sendTransaction } = useWallet();
     const { getUserSOLBalance } = useUserSOLBalanceStore();
     const { networkConfiguration, setNetworkConfiguration } = useNetworkConfiguration();
+    let signature: solana.TransactionSignature = '';
 
     useEffect(() => {
         console.log("Updating state...")
@@ -135,6 +138,33 @@ export const Terminal: FC = () => {
                 this.echo('Current Epoch: ' + result.currentEpoch)
                 this.echo('Absolute Slot: ' + result.absoluteSlot)
                 this.echo('Transaction Count: ' + result.transactionCount)
+
+            },
+            send_lamps: async function(amount, dest) {
+                try{
+                    const {
+                        context: { slot: minContextSlot },
+                        value: { blockhash, lastValidBlockHeight }
+                    } = await userConnection.getLatestBlockhashAndContext();
+            
+                    let tx = await sendLamportsTx(amount, walletPubkey, dest, userConnection, blockhash)
+
+                    console.log(tx)
+                    console.log("Prompting for signature...")
+                    // Send transaction and await for signature
+                    const signature = await sendTransaction(tx, userConnection, { minContextSlot });
+
+                    console.log(signature);
+
+                    // Send transaction and await for signature
+                    await userConnection.confirmTransaction({ blockhash, lastValidBlockHeight, signature })
+
+                    notify({ type: 'success', message: 'Transaction successful!', txid: signature });
+                } catch (error: any) {
+                    notify({ type: 'error', message: `Transaction failed!`, description: error?.message, txid: signature });
+                    console.log('error', `Transaction failed! ${error?.message}`, signature);
+                    return;
+                }
 
             }
         },
