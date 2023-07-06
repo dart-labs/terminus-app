@@ -68,3 +68,23 @@ export async function addUserApiKey(userKey: string, provider: string, apiKey: s
         return error
     }
 }
+
+export async function getUserApiKeys(userKey: string) {
+    try {
+        const response = await axios.get('/api/getApiKeys', {
+            params: {
+                pubkey: userKey
+            }
+    })
+    if (response.status === 404){
+        console.log(response)
+        return null
+    } else {
+        console.log(response)
+        return response.data.apiKeys
+    }
+    } catch (error) {
+        console.log(error)
+        return error
+    }
+}

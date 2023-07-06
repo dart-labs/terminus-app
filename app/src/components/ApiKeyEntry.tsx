@@ -1,5 +1,5 @@
 import React from 'react'
-import { TextField, Select, MenuItem, Button, createTheme, ThemeProvider } from '@mui/material'
+import { TextField, Select, MenuItem, InputLabel, Button, createTheme, ThemeProvider } from '@mui/material'
 import { red, purple } from '@mui/material/colors';
 import { lookupUser, addUserApiKey } from '../lib/ApiHelpers'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
@@ -62,6 +62,7 @@ export const ApiKeyEntry: React.FC = () => {
 
     return (
         <div>
+            <InputLabel>Api Provider</InputLabel>
             <Select
                 value={selectedValue}
                 onChange={handleProviderChange}
@@ -71,7 +72,7 @@ export const ApiKeyEntry: React.FC = () => {
                     backgroundColor: 'white',
                 }}
             >
-                <MenuItem value="">API Option</MenuItem>
+                <MenuItem value="" disabled>API Provider</MenuItem>
                 <MenuItem value="Helius">Helius</MenuItem>
                 <MenuItem value="Dune Analytics">Dune Analytics</MenuItem>
                 <MenuItem value="Glassnode">Glassnode</MenuItem>

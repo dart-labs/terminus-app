@@ -3,6 +3,7 @@ import { SignMessage } from '../../components/SignMessage';
 import { SendTransaction } from '../../components/SendTransaction';
 import { SendVersionedTransaction } from '../../components/SendVersionedTransaction';
 import { ApiKeyEntry } from '../../components/ApiKeyEntry'
+import { ApiKeyTable } from "components/ApiKeyDataTable";
 
 export const ApiKeysView: FC = ({ }) => {
 
@@ -15,6 +16,9 @@ export const ApiKeysView: FC = ({ }) => {
             {/* CONTENT GOES HERE */}
             <div className="text-center">
                 <ApiKeyEntry />
+            </div>
+            <div>
+                <ApiKeyTable />
             </div>
             </div>
         </div>
