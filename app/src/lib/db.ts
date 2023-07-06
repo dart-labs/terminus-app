@@ -24,26 +24,13 @@ export const ApiKeys = sequelize.define('apiKeys', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    helius: {
-        type: DataTypes.STRING
+    provider: {
+        type: DataTypes.STRING,
+        allowNull: false
     },
-    glassnode: {
-        type: DataTypes.STRING
-    },
-    dune: {
-        type: DataTypes.STRING
-    },
-    messari: {
-        type: DataTypes.STRING
-    },
-    solscan: {
-        type: DataTypes.STRING
-    },
-    coinbase: {
-        type: DataTypes.STRING
-    },
-    coinmarketcap: {
-        type: DataTypes.STRING
+    apikey: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 })
 
